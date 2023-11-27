@@ -29,15 +29,17 @@ def prepare_data(text, image, label):
 
 def train():
     # ---  Load Config  ---
-    device = torch.device(DEVICE)
+    # device = torch.device(DEVICE)
+    device = torch.device('cpu')
     num_workers = NUM_WORKER
     batch_size = BATCH_SIZE
     lr = LR
     l2 = L2
     num_epoch = NUM_EPOCH
     
-    # ---  Load Data  ---
-    dataset_dir = 'data/twitter'
+    # ---  Load ata  ---D
+    # dataset_dir = 'data/twitter'
+    dataset_dir = 'G:\CAFE\dataset\Twitter_Rumor_Detection'
     train_set = FeatureDataset(
         "{}/train_text_with_label.npz".format(dataset_dir),
         "{}/train_image_with_label.npz".format(dataset_dir)
@@ -165,7 +167,8 @@ def test(similarity_module, detection_module, test_loader):
     similarity_module.eval()
     detection_module.eval()
 
-    device = torch.device(DEVICE)
+    # device = torch.device(DEVICE)
+    device = torch.device('cpu')
     loss_func_detection = torch.nn.CrossEntropyLoss()
     loss_func_similarity = torch.nn.CosineEmbeddingLoss()
 

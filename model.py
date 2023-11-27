@@ -1,6 +1,6 @@
 import math
 import random
-from random import random
+# from random import random
 import torch
 import torch.nn as nn
 from torch.distributions import Normal, Independent
@@ -9,9 +9,14 @@ from torch.nn.functional import softplus
 
 random.seed(825)
 
+#基于卷积神经网络的文本编码方法（BERT的替代方案）
 class FastCNN(nn.Module):
     # a CNN-based altertative approach of bert for text encoding
-    def __init__(self, channel=32, kernel_size=(1, 2, 4, 8)):
+    def __init__(
+        self,
+        channel=32,
+        kernel_size=(1, 2, 4, 8)
+    ):
         super(FastCNN, self).__init__()
         self.fast_cnn = nn.ModuleList()
         for kernel in kernel_size:
@@ -32,7 +37,7 @@ class FastCNN(nn.Module):
         x_out = torch.cat(x_out, 1)
         return x_out
 
-
+#对文本与图像进行编码
 class EncodingPart(nn.Module):
     def __init__(
         self,
@@ -71,7 +76,7 @@ class EncodingPart(nn.Module):
         image_shared = self.shared_image(image)
         return text_shared, image_shared
 
-
+#计算文本与图像之间的相似度
 class SimilarityModule(nn.Module):
     def __init__(self, shared_dim=128, sim_dim=64):
         super(SimilarityModule, self).__init__()
@@ -128,7 +133,7 @@ class Encoder(nn.Module):
         sigma = softplus(sigma) + 1e-7  
         return Independent(Normal(loc=mu, scale=sigma), 1)
 
-
+#文本与图像间的歧义度学习
 class AmbiguityLearning(nn.Module):
     def __init__(self):
         super(AmbiguityLearning, self).__init__()
@@ -148,7 +153,7 @@ class AmbiguityLearning(nn.Module):
         skl = nn.functional.sigmoid(skl)
         return skl
 
-
+#单模态检测
 class UnimodalDetection(nn.Module):
         def __init__(self, shared_dim=128, prime_dim = 16):
             super(UnimodalDetection, self).__init__()
@@ -174,7 +179,7 @@ class UnimodalDetection(nn.Module):
             image_prime = self.image_uni(image_encoding)
             return text_prime, image_prime
 
-
+#跨模态批量处理（跨模态输出）
 class CrossModule4Batch(nn.Module):
     def __init__(self, text_in_dim=64, image_in_dim=64, corre_out_dim=64):
         super(CrossModule4Batch, self).__init__()
@@ -197,7 +202,7 @@ class CrossModule4Batch(nn.Module):
         correlation_out = self.c_specific_2(correlation_p)
         return correlation_out
 
-
+#虚假信息检测任务
 class DetectionModule(nn.Module):
     def __init__(self, feature_dim=64+16+16, h_dim=64):
         super(DetectionModule, self).__init__()
